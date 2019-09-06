@@ -9,7 +9,6 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>tkclient</name>
 
-
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -21,12 +20,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-     <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-	<dependency>
-		   <groupId>io.netty</groupId>
-		   <artifactId>netty-all</artifactId>
-		   <version>4.1.29.Final</version>
-	</dependency>
   </dependencies>
 
   <build>
@@ -63,5 +56,27 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    
+    <resources>
+        <resource>
+            <directory>config</directory>
+            <includes>
+                <include>**/*.config</include>
+                <include>**/*.xml</include>
+                <include>**/*.tld</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+                <include>**/*.*</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+    </resources>
+    
   </build>
 </project>
