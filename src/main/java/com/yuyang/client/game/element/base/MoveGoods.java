@@ -1,6 +1,5 @@
-package com.yuyang.client.game.element;
+package com.yuyang.client.game.element.base;
 
-import com.yuyang.client.game.element.base.BaseDirection;
 
 public abstract class MoveGoods implements Element{
 	

@@ -6,8 +6,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 import com.yuyang.client.game.WarMain;
-import com.yuyang.client.game.element.Element;
-import com.yuyang.client.game.element.Weapon;
 
 public class BaseBullet  extends Weapon{
 	

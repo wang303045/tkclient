@@ -1,4 +1,4 @@
-package com.yuyang.client.game.element;
+package com.yuyang.client.game.element.base;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;

@@ -17,8 +17,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import com.yuyang.client.game.element.Weapon;
 import com.yuyang.client.game.element.base.BaseTank;
+import com.yuyang.client.game.element.base.Weapon;
 import com.yuyang.client.game.element.manager.EnemyMoveManager;
 import com.yuyang.client.game.element.tank.EnemyTank;
 import com.yuyang.client.game.tools.ImagesMap;

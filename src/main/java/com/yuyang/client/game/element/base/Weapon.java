@@ -1,4 +1,5 @@
-package com.yuyang.client.game.element;
+package com.yuyang.client.game.element.base;
+
 
 public abstract class Weapon extends MoveGoods{
 	

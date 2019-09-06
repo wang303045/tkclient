@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.yuyang.client.game.WarMain;
-import com.yuyang.client.game.element.MoveGoods;
-import com.yuyang.client.game.element.Weapon;
 import com.yuyang.client.game.tools.ImagesMap;
 
 public class BaseTank extends MoveGoods{
