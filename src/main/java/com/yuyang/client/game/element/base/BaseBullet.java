@@ -10,7 +10,7 @@ import com.yuyang.client.game.WarMain;
 public class BaseBullet  extends Weapon{
 	
 	
-	private WarMain war;
+	protected WarMain war;
 	
 	private BaseDirection team = null;
 	

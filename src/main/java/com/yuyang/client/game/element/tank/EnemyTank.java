@@ -44,7 +44,7 @@ public class EnemyTank extends BaseTank {
 			}
 		}
 		move();
-		
+		showBlood(g);
 	}
 
 	//开火炮筒的方向 
@@ -75,19 +75,19 @@ public class EnemyTank extends BaseTank {
 			switch (randomint) {
 			case 1:
 				bU = true;
-				this.war.getWeaponlist().add(fire());
+//				this.war.getWeaponlist().add(fire());
 				break;
 			case 2:
 				bD = true;
-				this.war.getWeaponlist().add(fire());
+//				this.war.getWeaponlist().add(fire());
 				break;
 			case 3:
 				bL = true;
-				this.war.getWeaponlist().add(fire());
+//				this.war.getWeaponlist().add(fire());
 				break;
 			case 4:
 				bR = true;
-				this.war.getWeaponlist().add(fire());
+//				this.war.getWeaponlist().add(fire());
 				break;	
 			case 5:
 				this.war.getWeaponlist().add(fire());

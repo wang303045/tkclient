@@ -1,16 +1,28 @@
 package com.yuyang.client.game.element.base;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.Timer;
+
 import com.yuyang.client.game.WarMain;
+import com.yuyang.client.game.element.items.SpeedChanger;
+import com.yuyang.client.game.element.weapon.Mine;
 import com.yuyang.client.game.tools.ImagesMap;
 
 public class BaseTank extends MoveGoods{
+	
+	protected int oldX = 0;
+	
+	protected int oldY = 0;
 
 	protected WarMain war = null;
 	
@@ -28,10 +40,28 @@ public class BaseTank extends MoveGoods{
 
 	protected boolean bR=false;
 	
+	protected int life = 0;
+	
+	protected int bloodAWidth = 60;
+	protected int bloodAHeight = 5;
+	
+	protected int speedSeconds = 20;
+	
+	protected Timer speedTime = null;
+	
+	protected boolean speedFlag = false;
 	
 	protected BaseDirection faceDir  = BaseDirection.D;
 	
 	protected static Map<String, Image> imgs = new HashMap<String, Image>();
+	
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
+	}
 	
 	public boolean isIslive() {
 		return islive;
@@ -45,6 +75,8 @@ public class BaseTank extends MoveGoods{
 	public BaseTank(int x, int y, int speed , boolean isGood , WarMain war) {
 		this.x = x;
 		this.y = y;
+		this.oldX = x;
+		this.oldY = y;
 		this.speed = speed;
 		this.visiable = true;
 		this.imgs = ImagesMap.getInstance().getImgs();
@@ -54,16 +86,16 @@ public class BaseTank extends MoveGoods{
 		this.war = war;
 	}
 	
-	public BaseTank(int x, int y, int speed , boolean visiable , boolean isGood ,  WarMain war) {
-		this.x = x;
-		this.y = y;
-		this.speed = speed;
+	public BaseTank(int x, int y, int speed , boolean visiable , boolean isGood , int life, WarMain war) {
+		this(x,  y,  speed ,  isGood ,   war);
 		this.visiable = visiable;
-		this.imgs = ImagesMap.getInstance().getImgs();
-		this.size = 66;
-		this.moveDir  = BaseDirection.STOP;
-		this.isGood = isGood;
-		this.war = war;
+		this.life = life;
+	}
+	
+	public BaseTank(int x, int y, int speed , boolean visiable , boolean isGood ,  WarMain war) {
+		this(x,  y,  speed ,  isGood ,   war);
+		this.visiable = visiable;
+		this.life = 10;
 	}
 
 	//按键改变是否按键的 boolean的值，按键之后改变表示按键的boolean值
@@ -85,6 +117,10 @@ public class BaseTank extends MoveGoods{
 		case KeyEvent.VK_SPACE:
 			this.war.getWeaponlist().add(fire());
 			break;	
+		case KeyEvent.VK_CONTROL:
+			this.war.getWeaponlist().add(layMine());
+			break;	
+			
 		default:
 			break;
 		}
@@ -117,6 +153,8 @@ public class BaseTank extends MoveGoods{
 	//通过dir的方向，改变坦克的运动也就是 x、y的值，真正的运动
 	@Override
 	public void move() {
+		this.oldX = this.x;
+		this.oldY = this.y;
 		switch (moveDir) {
 		case U:
 			y = y - speed;
@@ -196,7 +234,14 @@ public class BaseTank extends MoveGoods{
 			}
 		}
 		move();
-		
+		showBlood(g);
+		if(speedFlag){
+//			Font f = new Font("Arial", Font.BOLD, 10);
+			g.setFont(new Font("宋体", Font.PLAIN, 12));
+			g.setColor(Color.WHITE);
+//			g.setFont(f);
+			g.drawString("速度加快：" + speedSeconds + "秒", 10, 100);
+		}
 	}
 
 	//开火炮筒的方向 
@@ -221,11 +266,102 @@ public class BaseTank extends MoveGoods{
 	}
 
 	public Weapon fire() {
-		return new BaseBullet(this.x + 5, this.y+7, 5 , 60 , this.faceDir , this.team , this.war);
+		if(islive){
+			return new BaseBullet(this.x + 5, this.y+7, 5 , 60 , this.faceDir , this.team , this.war);
+		}else{
+			return null;
+		}
+			
+	}
+	
+	public Weapon layMine() {
+		if(islive){
+			return new Mine(this.x + 5, this.y+7, 5 , this.faceDir , this.team , this.war);
+		}else{
+			return null;
+		}
+			
+	}
+	
+	public void stay(){
+		this.x = this.oldX;
+		this.y = this.oldY;
+	}
+	
+	//判断撞到tank  ----> 可以改用策略方式 
+	//这里需要用控制翻转，把tank的引用传给element，让不同的element来处理对tank产生的不同影响
+	//这里还没有写好需要改, 思路：可以写1个或2个大的接口，接口中统一处理碰撞之后的方法 beforeCllide
+ 	public boolean collide(Element element){
+		if(!isCollide(element)){
+			return false;
+		}
+		BaseTank tank = null;
+		if(element instanceof BaseTank){
+			tank = (BaseTank)element;
+			if(this!=tank){
+				stay();
+				return true;
+			}
+		}else if(element instanceof BaseWall){
+				stay();
+				return true;
+		}else if(element instanceof SpeedChanger){
+			SpeedChanger sc= (SpeedChanger)element ;
+			if(sc.isLive()){
+				((SpeedChanger) element).setLive(false);
+				this.speed = this.speed + 2;
+				if(null == speedTime){
+					speedSeconds = 10;
+					speedTime = new Timer(1000, new SpeedListener()); //持续20秒
+					speedTime.start();
+				}
+				return true;
+			}
+			return false;
+		}else{
+			return false;
+		}
+		return false;
+	}
+	
+
+
+	public boolean isCollide(Element element){
+		return this.getRectangle().intersects(element.getRectangle());
+	}
+	
+	
+
+
+	//画血条
+	public void showBlood(Graphics g) {
+		g.setColor(Color.BLUE);
+		g.drawRect(x, y-8, bloodAWidth, bloodAHeight);
+		g.setColor(Color.RED);
+		int bloodWidth = bloodAWidth * life / 10;
+		g.fillRect(x, y-8, bloodWidth, bloodAHeight);
 	}
 	
 	@Override
 	public Rectangle getRectangle(){
 		return new Rectangle(this.x , this.y , this.size , this.size);
 	}
+	
+	private class SpeedListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(speedSeconds == 0){
+				speed = speed - 2;;
+				speedFlag = false;
+				speedTime.stop();
+			}else{
+				speedFlag = true;
+			}
+			speedSeconds--;
+		}
+    }
+	
+
+	
 }
