@@ -1,22 +1,19 @@
 package com.yuyang.client.game.element.base;
 
+import com.yuyang.client.game.WarMain;
 
-public abstract class Weapon extends MoveGoods{
+
+public abstract class Weapon extends MoveObject{
 	
-	protected boolean isLive = true;
 
-	public boolean isLive() {
-		return isLive;
-	}
-
-	public void setLive(boolean isLive) {
-		this.isLive = isLive;
+	public Weapon(int x, int y, int width, int height, int life,
+			boolean visiable, boolean invincible, WarMain war, int speed,
+			BaseDirection moveDir, boolean moving) {
+		super(x, y, width, height, life, visiable, invincible, war, speed, moveDir,
+				moving);
+		// TODO Auto-generated constructor stub
 	}
 
 	public void explode(){}
-	
-	public boolean hit(Element element){
-		return this.getRectangle().intersects(element.getRectangle());
-	}
 	
 }

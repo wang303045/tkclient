@@ -2,63 +2,49 @@ package com.yuyang.client.game.element.items;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 
-import com.yuyang.client.game.element.base.MoveGoods;
+import com.yuyang.client.game.WarMain;
+import com.yuyang.client.game.element.base.BaseDirection;
+import com.yuyang.client.game.element.base.GameObject;
+import com.yuyang.client.game.element.base.MoveObject;
 
-public class SpeedChanger extends MoveGoods{
+public class SpeedChanger extends MoveObject{
 	
-	private boolean isLive = true;
 	
-	public SpeedChanger(int x, int y, int speed, int size, boolean isLive, boolean visiable){
-		this.x = x;
-		this.y = y;
-		this.speed = speed;
-		this.size = size;
-		this.isLive = isLive;
-		this.visiable = visiable;
+	public SpeedChanger(int x, int y, int width, int height, int life,
+			boolean visiable, boolean invincible, WarMain war, int speed,
+			BaseDirection moveDir, boolean moving) {
+		super(x, y, width, height, life, visiable, invincible, war, speed, moveDir,
+				moving);
+		// TODO Auto-generated constructor stub
 	}
 	
-
-	
-	
-	public boolean isLive() {
-		return isLive;
-	}
-
-
-
-
-	public void setLive(boolean isLive) {
-		this.isLive = isLive;
-	}
-
-
-
 
 	@Override
 	public void show(Graphics g) {
-		if(!isLive) return;
+		if(!isAlive()) return;
 		
 		g.setColor(Color.RED);
-		g.fillRect(x, y, size, size);
+		g.fillRect(x, y, width, height);
 	}
 
-	@Override
-	public Rectangle getRectangle() {
-		return new Rectangle(this.x , this.y , this.size , this.size);
-	}
 
 	@Override
-	protected void changeDir() {
+	protected void onCollide(GameObject gameObject) {
 		// TODO Auto-generated method stub
 		
 	}
 
+
+
 	@Override
-	protected void move() {
+	protected Image[] getMoveImages() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
+
+
 
 }

@@ -4,10 +4,13 @@ import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.yuyang.client.game.WarMain;
 import com.yuyang.client.game.element.base.BaseTank;
 import com.yuyang.client.game.element.tank.EnemyTank;
 
 public class EnemyMoveManager {
+	
+	private WarMain war = null;
 	
 	private int sleepSecond = 3000;
 	
@@ -19,8 +22,9 @@ public class EnemyMoveManager {
 	
 	private List<BaseTank> etankList = new LinkedList<BaseTank>();
 	
-	public EnemyMoveManager(List<BaseTank> etankList){
+	public EnemyMoveManager(List<BaseTank> etankList, WarMain war){
 		this.etankList = etankList;
+		this.war = war;
 	}
 	
 	
@@ -30,7 +34,7 @@ public class EnemyMoveManager {
 		switch (knum) {
 		case KeyEvent.VK_1:
 			if(!isMoveRun){
-				new MoveThread().start();
+				war.getTpool().submit(new MoveThread());
 				isMoveRun = true;
 				isStop = false;
 			}
@@ -47,9 +51,9 @@ public class EnemyMoveManager {
 	}
 
 	public void moveAll(){
-		for (int i = 0; i < this.etankList.size(); i++) {
-			((EnemyTank)this.etankList.get(i)).randomAction(scope);
-		}
+//		for (int i = 0; i < this.etankList.size(); i++) {
+//			((EnemyTank)this.etankList.get(i)).randomAction(scope);
+//		}
 	}
 	
 	public void stopAll(){
@@ -58,7 +62,7 @@ public class EnemyMoveManager {
 		}
 	}
 	
-	private class MoveThread extends Thread{
+	private class MoveThread implements Runnable{
 
 		@Override
 		public void run() {
