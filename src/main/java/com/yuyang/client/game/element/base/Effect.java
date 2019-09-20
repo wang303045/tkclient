@@ -3,7 +3,7 @@ package com.yuyang.client.game.element.base;
 import com.yuyang.client.game.WarMain;
 
 
-//游戏显示效果类，不需要移动速度等，不需要检测碰撞，如爆炸效果
+//游戏显示效果类，不需要移动速度等，不需要检测碰撞，如爆炸效果、地面效果、特殊道具
 public abstract class Effect extends GameObject{
 
 	public Effect(int x, int y, int width, int height, int life,

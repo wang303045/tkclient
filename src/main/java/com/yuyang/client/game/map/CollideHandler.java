@@ -2,6 +2,7 @@ package com.yuyang.client.game.map;
 
 
 import com.yuyang.client.game.element.base.BaseDirection;
+import com.yuyang.client.game.element.base.BaseScene;
 import com.yuyang.client.game.element.base.GameObject;
 import com.yuyang.client.game.element.base.MoveObject;
 
@@ -39,9 +40,10 @@ public class CollideHandler {
 				
 				//***** 是判断坦克移动方向上的每一步的xy值上有没有和其他物体相交 ，来判断有没有和别的物体相交
 				for (int i = nowY - 1; i >= nextY; i--) {
-					if (i < 0) {
-						//这里需要重写
-						//return SceneHelper.getSceneBoundary(Direction.UP);  //判断需要移动到的y坐标是否到达屏幕最上方
+					if (i < 0) { //判断需要移动到的y坐标是否到达屏幕最上方
+						//如果向上走x等于或小于0，那么返回屏幕上边界的 GameObject，相当于这个物体是x轴坐标线（一条线）
+						//那么这个物体x=nowX ， y=0 ，长和宽都等于moveObject的长和宽
+						return BaseScene.UP;  
 					}
 	
 					for (int j = nowX; j < nextX; j++) {   //从当前x坐标 不断循环 ， 直到当前坐标等于坦克当前x坐标 加上坦克的宽度 
@@ -62,8 +64,7 @@ public class CollideHandler {
 				//***** 是判断坦克移动方向上的每一步的xy值上有没有和其他物体相交 ，来判断有没有和别的物体相交
 				for (int i = nowY+1 ; i < nextY; i++) {
 					if (i >= windowH) {
-						//这里需要重写
-						//return SceneHelper.getSceneBoundary(Direction.UP);  //判断需要移动到的y坐标是否到达屏幕最下方
+						return BaseScene.DOWN;
 					}
 	
 					for (int j = nowX; j < nextX; j++) {   //从当前x坐标 不断循环 ， 直到当前坐标等于坦克当前x坐标 加上坦克的宽度 
@@ -84,8 +85,7 @@ public class CollideHandler {
 				//***** 是判断坦克移动方向上的每一步的xy值上有没有和其他物体相交 ，来判断有没有和别的物体相交
 				for (int i = nowX-1; i > nextX; i--) {
 					if (i < 0) {
-						//这里需要重写
-						//return SceneHelper.getSceneBoundary(Direction.UP);  //判断需要移动到的y坐标是否到达屏幕最下方
+						return BaseScene.LEFT;
 					}
 	
 					for (int j = nowY; j < nextY; j++) {   
@@ -106,8 +106,7 @@ public class CollideHandler {
 				//***** 是判断坦克移动方向上的每一步的xy值上有没有和其他物体相交 ，来判断有没有和别的物体相交
 				for (int i = nowX+1; i < nextX; i++) {
 					if (i >= windowW) {
-						//这里需要重写
-						//return SceneHelper.getSceneBoundary(Direction.UP);  //判断需要移动到的y坐标是否到达屏幕最下方
+						return BaseScene.RIGHT;
 					}
 	
 					for (int j = nowY; j < nextY; j++) {   

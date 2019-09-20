@@ -19,19 +19,21 @@ public class ImagesMap {
 	public static Image[] normalTankImages = null;
 	public static Image[] enemyTankImages = null;
 	public static Image[] bulletImages = null;
+	public static Image[] wallImages = null;
+	public static Image[] metalImages = null;
 	public static Map<String, Image> imgs = new HashMap<String, Image>();
 	
 	public static void  initImanges()
 	{
 		//tank图片
 		normalTankImages = new Image[] {
-				ImageLoader.loadImageIcon("tank5_u.png"),
+				ImageLoader.loadImageIcon("tank6_u.png"),
 				
-				ImageLoader.loadImageIcon("tank5_d.png"),
+				ImageLoader.loadImageIcon("tank6_d.png"),
 				
-				ImageLoader.loadImageIcon("tank5_l.png"),
+				ImageLoader.loadImageIcon("tank6_l.png"),
 			
-				ImageLoader.loadImageIcon("tank5_r.png")
+				ImageLoader.loadImageIcon("tank6_r.png")
 		};
 		
 		enemyTankImages = new Image[] {
@@ -46,28 +48,29 @@ public class ImagesMap {
 		
 				//子弹图片
 				bulletImages = new Image[] {
-						ImageLoader.loadImageIcon("bullet1_l.png"),
-						
 						ImageLoader.loadImageIcon("bullet1_u.png"),
 						
-						ImageLoader.loadImageIcon("bullet1_r.png"),
+						ImageLoader.loadImageIcon("bullet1_d.png"),
+						
+						ImageLoader.loadImageIcon("bullet1_l.png"),
 					
-						ImageLoader.loadImageIcon("bullet1_d.png")
+						ImageLoader.loadImageIcon("bullet1_r.png")
 				};
 				//其他图片
+				wallImages =  new Image[] {
+						ImageLoader.loadImageIcon("w_jizx.png"),
+						ImageLoader.loadImageIcon("w_diaos.png")
+						
+				};
+				
+				metalImages =  new Image[] {
+						ImageLoader.loadImageIcon("back1.png")
+				};
+				
+				
 				
 				
 				//图片映射图片识别key
-				imgs.put("tankL", tankImages[8]);
-				imgs.put("tankU", tankImages[9]);
-				imgs.put("tankR", tankImages[10]);
-				imgs.put("tankD", tankImages[11]);
-				
-				imgs.put("etankL", tankImages[4]);
-				imgs.put("etankU", tankImages[5]);
-				imgs.put("etankR", tankImages[6]);
-				imgs.put("etankD", tankImages[7]);
-				
 				imgs.put("bulletL", bulletImages[0]);
 				imgs.put("bulletU", bulletImages[1]);
 				imgs.put("bulletR", bulletImages[2]);

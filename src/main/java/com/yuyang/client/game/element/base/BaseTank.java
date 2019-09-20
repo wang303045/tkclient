@@ -7,6 +7,10 @@ import java.awt.Image;
 import java.util.Map;
 
 import com.yuyang.client.game.WarMain;
+import com.yuyang.client.game.common.Constants;
+import com.yuyang.client.game.element.weapon.Mine;
+import com.yuyang.client.game.element.weapon.NormalBullet;
+import com.yuyang.client.game.factory.GameObjectFactory;
 import com.yuyang.client.game.tools.ImagesMap;
 
 public abstract class BaseTank extends MoveObject{
@@ -24,15 +28,18 @@ public abstract class BaseTank extends MoveObject{
 	
 	protected BaseDirection faceDir  = BaseDirection.D;
 	
+	protected int weaponType;
+	
 	protected static Map<String, Image> imgs = ImagesMap.getImgs();
 	
 	public BaseTank(int x, int y, int width, int height, int life,
 			boolean visiable, boolean invincible, WarMain war, int speed,
 			BaseDirection moveDir, boolean moving, BaseDirection team,
-			int id) {
+			int id, int weaponType) {
 		super(x, y, width, height, life, visiable, invincible, war, speed,
 				moveDir, moving, id);
 		this.team = team;
+		this.weaponType = weaponType;
 	}
 	
 	public BaseTank(int x, int y, int width, int height, int life,
@@ -42,69 +49,45 @@ public abstract class BaseTank extends MoveObject{
 		super(x, y, width, height, life, visiable, invincible, war, speed,
 				moveDir, moving);
 		this.team = team;
+		this.weaponType = 1;
 	}
 
-	//按键改变是否按键的 boolean的值，按键之后改变表示按键的boolean值
-//	public void keyPressed(KeyEvent e) {
-//		int knum = e.getKeyCode();
-//		switch (knum) {
-//		case KeyEvent.VK_W:
-//			bU = true;
-//			break;
-//		case KeyEvent.VK_S:
-//			bD = true;
-//			break;
-//		case KeyEvent.VK_A:
-//			bL = true;
-//			break;
-//		case KeyEvent.VK_D:
-//			bR = true;
-//			break;	
-//		case KeyEvent.VK_SPACE:
-//			this.war.getWeaponlist().add(fire());
-//			break;	
-//		case KeyEvent.VK_CONTROL:
-//			this.war.getWeaponlist().add(layMine());
-//			break;	
-//			
-//		default:
-//			break;
-//		}
-//		changeDir();
-//	}
 
-	
-//	public void keyReleased(KeyEvent e) {
-//		int knum = e.getKeyCode();
-//		switch (knum) {
-//		case KeyEvent.VK_W:
-//			bU = false;
-//			break;
-//		case KeyEvent.VK_S:
-//			bD = false;
-//			break;
-//		case KeyEvent.VK_A:
-//			bL = false;
-//			break;
-//		case KeyEvent.VK_D:
-//			bR = false;
-//			break;	
-//		default:
-//			break;
-//		}
-//		changeDir();
-//	}
-	
+	@Override
+	protected void onCollide(GameObject gameObject) {
+		if(gameObject instanceof Weapon){
+			stop();
+			((Weapon) gameObject).attack(this);
+		}else{
+			stop();
+		}
+		
+	}
 
+
+
+	public void stopFire() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	//显示tank，主要是通过判断moveDir运动的方向画出4个方向的tank图片,并且给开火方向赋值
 	@Override
 	public void show(Graphics g) {
-		if(!isAlive()) return ;
-		
 		if(this.visiable) {
 			super.show(g);
 			showBlood(g);
 		}
+		
+		//show 方法应该不需要判断生死，因为在 doAction里面已经处理了，
+		//如果life是0了，那么moveObject里面会掉用onDie方法，把这个物体移出游戏Map
+		
+//		if(!isAlive()){
+//			this.war.removeObject(this);
+//			return ;
+//		} 
+//		
 //		if(this.visiable) {
 //			switch (moveDir) {
 //			case U:
@@ -132,10 +115,8 @@ public abstract class BaseTank extends MoveObject{
 //		}
 		
 		if(speedFlag){
-//			Font f = new Font("Arial", Font.BOLD, 10);
 			g.setFont(new Font("宋体", Font.PLAIN, 12));
 			g.setColor(Color.WHITE);
-//			g.setFont(f);
 			g.drawString("速度加快：" + speedSeconds + "秒", 10, 100);
 		}
 	}
@@ -161,13 +142,51 @@ public abstract class BaseTank extends MoveObject{
 //		}
 //	}
 
-	public Weapon fire() {
+	public void fire() {
 		if(isAlive()){
-			return new BaseBullet(this.x +(width-2) , this.y+(height/2), 21 , 60 , 1 , true, false, this.war, 15, this.moveDir, true, this.team);
-		}else{
-			return null;
+			int x, y;
+			switch (moveDir) {
+			case U:
+				x = this.x +(width/2);
+				y = this.y - 20;		//子弹本身有20的长宽
+				break;
+			case D:
+				x = this.x +(width/2);
+				y = this.y + height;
+				break;
+			case L:
+				x = this.x - 20;      //子弹本身有20的长宽
+				y = this.y + (height/2);
+				break;
+			case R:
+				x = this.x  + width;
+				y = this.y + (height/2);
+				break;
+			default:
+				throw new IllegalStateException("illegal moveDir: " + moveDir);
+			}
+			
+			Weapon weapon = (Weapon) getWeapon(this.weaponType, x, y);
+			war.addObject(weapon);
+//			return new BaseBullet(this.x +(width-2) , this.y+(height/2), 21 , 60 , 1 , true, false, this.war, 15, this.moveDir, true, this.team);
 		}
 			
+	}
+	
+	public Weapon getWeapon(int weaponType, int x, int y) {
+		Weapon weapon = null;
+		switch (weaponType) {
+		case 1:
+			weapon = (NormalBullet) GameObjectFactory.newGameObj(x, y, Constants.TYPE_NO_BULLET, this.moveDir, this.team, war);
+			break;
+		case 2:
+			weapon = (Mine) GameObjectFactory.newGameObj(x, y, Constants.TYPE_MINE, this.moveDir, this.team, war);
+			break;
+		default:
+			weapon = (NormalBullet) GameObjectFactory.newGameObj(x, y, Constants.TYPE_NO_BULLET, this.moveDir, this.team, war);
+			break;
+		}
+		return weapon;
 	}
 	
 //	public Weapon layMine() {
@@ -214,33 +233,8 @@ public abstract class BaseTank extends MoveObject{
 
     }
 
-	@Override
-	protected void onCollide(GameObject gameObject) {
-		if(gameObject instanceof Weapon){
-			
-		}else{
-			stop();
-		}
-		
-	}
-
-
 	public void changeWeapon(int weaponType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void stopFire() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public int getLife() {
-		return life;
-	}
-
-	public void setLife(int life) {
-		this.life = life;
+		this.weaponType = weaponType;
 	}
 	
 }

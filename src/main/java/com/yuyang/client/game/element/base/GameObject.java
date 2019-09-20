@@ -14,6 +14,14 @@ public abstract class GameObject implements Element{
 	protected int width = 0;
 	protected int height = 0;
 	protected int life;
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
+	}
+
 	protected boolean visiable = false;
 	protected boolean invincible;
 	
@@ -51,11 +59,12 @@ public abstract class GameObject implements Element{
 	public void show(Graphics g) {
 		g.drawImage(getImage(), x, y, null);
 	}
+	
 	@Override
 	public void doAction() {
 		if (!isAlive()) {
 			throw new IllegalStateException(
-					"when doAction, gameObject shouldn't be died!");
+					"when doAction, gameObject shouldn't be died ===> " + this);
 		}
 	}
 	
@@ -109,6 +118,7 @@ public abstract class GameObject implements Element{
 		this.height = height;
 	}
 
+	//调用onDie方法之前最好需要判断是否还活着
 	public void onDie(GameObject collidedGameObj) {
 		war.removeObject(this);    //从游戏所有物体map中移除这个object
 	}

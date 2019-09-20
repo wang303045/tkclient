@@ -13,7 +13,7 @@ public class EnemyTank extends BaseTank {
 			boolean visiable, boolean invincible, WarMain war, int speed,
 			BaseDirection moveDir, boolean moving, int id) {
 		super(x, y, width, height, life, visiable, invincible, war, speed, moveDir,
-				moving, BaseDirection.BLUE, id);
+				moving, BaseDirection.BLUE, id, 1);
 		// TODO Auto-generated constructor stub
 	}
 	

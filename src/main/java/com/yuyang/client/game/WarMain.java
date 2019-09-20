@@ -5,12 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.Image;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -18,19 +14,15 @@ import java.util.concurrent.ExecutorService;
 import javax.swing.JFrame;
 
 import com.yuyang.client.game.ThreadPool.ThreadManager;
-import com.yuyang.client.game.common.Config;
-import com.yuyang.client.game.element.base.BaseDirection;
+import com.yuyang.client.game.common.Constants;
 import com.yuyang.client.game.element.base.BaseTank;
 import com.yuyang.client.game.element.base.BaseWall;
-import com.yuyang.client.game.element.base.Effect;
 import com.yuyang.client.game.element.base.Element;
 import com.yuyang.client.game.element.base.GameObject;
 import com.yuyang.client.game.element.base.MoveObject;
 import com.yuyang.client.game.element.base.Weapon;
 import com.yuyang.client.game.element.items.SpeedChanger;
 import com.yuyang.client.game.element.manager.EnemyMoveManager;
-import com.yuyang.client.game.element.tank.EnemyTank;
-import com.yuyang.client.game.element.tank.NormalTank;
 import com.yuyang.client.game.factory.GameObjectFactory;
 import com.yuyang.client.game.map.CollideHandler;
 import com.yuyang.client.game.map.GameMapHandler;
@@ -48,11 +40,6 @@ public class WarMain extends JFrame{
 	public static final int windowH = 720;
 	public static final int windowX = 100;
 	public static final int windowY = 5;
-	
-//	//所有游戏物体的map
-//	private ConcurrentMap<Integer, GameObject> objectMap = new ConcurrentHashMap<Integer, GameObject>();  
-//	 //游戏地图数组
-//	public int[][] gameLand = null;  
 	
 	//游戏地图以及游戏物体，包含地图数组，物体map
 	private GameMapHandler gameMapHandler = null;
@@ -131,10 +118,7 @@ public class WarMain extends JFrame{
 			//加载图片
 			ImagesMap.initImanges();
 			
-			///创建游戏内容
-//			createElement();  //需要删掉
-			
-			//创建游戏内容 ,并且载入地图
+			//创建游戏内容（预加载所有物体） ,并且载入地图
 			gameMapHandler = new GameMapHandler(this.windowW, this.windowH, this);
 			
 			//创建碰撞检测类
@@ -156,56 +140,6 @@ public class WarMain extends JFrame{
 		
 	}
 
-	
-	/**
-	 *  ****** 这里综合起来，可以做成地图配置类，不同的载入元素就是不同的地图 **********
-	 * ***/
-	//预加载游戏需要的元素
-//	private void createElement(){
-//		//所有元素list
-//		elementList = new LinkedList<Element>();
-//		gameObjectList = new LinkedList<GameObject>();
-//		
-//		//加入我的tank
-//		tank = new NormalTank(100, 100, 60, 60, 20,
-//				true, false, this, 10,
-//				BaseDirection.D, false, BaseDirection.RED);
-//		
-//		//加入电脑的tank
-//		etankList = new LinkedList<BaseTank>();
-//		for (int i = 1; i < 8; i++) {
-////			e.add(new EnemyTank(10+i*150, 10 , 2 , true , false , this));
-//			etankList.add(new EnemyTank(10+i*120, 10 , 2 , true , false , this));
-//		}
-//		
-//		//加子弹list
-//		weaponlist = new LinkedList<Weapon>();
-//		
-//		//加2堵墙
-//		wallList = new ArrayList<BaseWall>();
-//		wallList.add(new BaseWall(200, 200, 200, 20, 10, true, false, this));
-//		wallList.add(new BaseWall(600, 500, 200, 20, 10, true, false, this));
-//		
-//		//单人游戏随意移动tank管理类
-//		enemyMoveManager = new EnemyMoveManager(etankList, this);
-//		
-//		//加入速度道具
-//		sc = new SpeedChanger(30, 300, 0, 20, true, true);
-//		
-//		//这里最终全部加入一个element的list中，然后在runingDraw中依次画出来
-//		elementList.add(tank);
-//		elementList.addAll(etankList);
-//		elementList.addAll(weaponlist);
-//		elementList.addAll(wallList);
-//		elementList.add(sc);
-//		
-//		//新的方法，需要画的都是 GameObject
-//		gameObjectList.add(tank);
-//		gameObjectList.addAll(etankList);
-//		gameObjectList.addAll(weaponlist);
-//		gameObjectList.add((GameObject) wallList);
-//		gameObjectList.add(sc);
-//	}
 	
 	
 	//画游戏的主方法，根据不同状态画不同画面
@@ -229,10 +163,12 @@ public class WarMain extends JFrame{
 	 *                大部分都在这里改 
 	 * */
 	public void runningDraw(Graphics g) {
-//		Font f = new Font("Arial", Font.BOLD, 10);
-//		g.setColor(Color.WHITE);
-//		g.setFont(f);
-//		g.drawString("weaponlist:" + weaponlist.size() , 10, 200);
+		Font f = new Font("Arial", Font.BOLD, 10);
+		g.setColor(Color.WHITE);
+		g.setFont(f);
+		g.drawString("object member count:" + gameMapHandler.getObjectMap().size() , 10, 200);
+		
+		g.drawImage(ImagesMap.metalImages[0], 0, 0, 1000, 720, null);
 		
 		//从地图物体大管家中取得所有游戏物体，调用他们的doAction和show方法
 		Iterator<Map.Entry<Integer, GameObject>> entries = this.gameMapHandler.getObjectMap().entrySet().iterator();
@@ -240,72 +176,9 @@ public class WarMain extends JFrame{
 				Map.Entry<Integer, GameObject> entry = entries.next();
 				GameObject o = (GameObject)entry.getValue();
 				o.doAction();
-				o.show(g);
+				o.show(g);   //是否要在这个方法里面判断一下死了的物体就不要画了，或者在子类中实现需不需要画
 		}
 
-		//画墙
-//		wall.show(g);
-//		
-//		//画坦克
-//		tank.show(g);
-//		
-//		//画敌人tank
-//		for (int i = 0; i < etankList.size(); i++) {
-//			etankList.get(i).show(g);
-//		}
-		
-		
-		//*****  下面是碰撞检测 需要单独做一个 handler类来处理 ******
-		//撞墙
-//		for (BaseWall wall : wallList) {
-//			tank.collide(wall);
-//		}
-//		//所有tank碰撞检测
-//		for (int i = 0; i < etankList.size(); i++) {
-//			for (BaseWall wall : wallList) {
-//				etankList.get(i).collide(wall);//碰撞墙
-//			}
-//			tank.collide(etankList.get(i));
-//			etankList.get(i).collide(tank);
-//			for (int j = 0; j < etankList.size(); j++) {
-//				etankList.get(i).collide(etankList.get(j));
-//			}
-//		}
-//		
-//		//子弹碰撞检测
-//		for (int i = 0; i < weaponlist.size(); i++) {
-//			Weapon weapon = weaponlist.get(i);
-//			weapon.show(g);
-//			if(weapon.hit(tank)){
-//				if(tank.isIslive()){
-//					tank.setLife(tank.getLife()-2);
-//					if(tank.getLife() <= 0){
-//						tank.setIslive(false);
-//					}
-//					weapon.setLive(false);
-//					weaponlist.remove(weapon);
-//				}
-//			}
-//			for (int j = 0; j < etankList.size(); j++) {
-//				if(weapon.hit(etankList.get(j))){
-//					BaseTank baseTank = etankList.get(j);
-//					if(baseTank.isIslive()){
-//						baseTank.setLife(baseTank.getLife()-2);
-//						if(baseTank.getLife() <= 0){
-//							baseTank.setIslive(false);
-//							etankList.remove(baseTank);
-//						}
-//						weapon.setLive(false);
-//						weaponlist.remove(weapon);
-//					}
-////					weapon.setLive(false);
-////					weaponlist.remove(weapon);
-//				}
-//			}
-//		}
-		
-		//碰撞速度道具
-//		tank.collide(sc);
 	}
 	
 	
@@ -322,7 +195,7 @@ public class WarMain extends JFrame{
 	
 	private void addPlayer() {
 		//加入我的tank
-		tank = (BaseTank) GameObjectFactory.newGameObj(30, 30, Config.TYPE_PLAY_TANK, this);
+		tank = (BaseTank) GameObjectFactory.newGameObj(30, 30, Constants.TYPE_PLAY_TANK, null, null, this);
 				
 //		tank = 	new NormalTank(30, 30, 33, 33, 20,
 //						true, false, this, 10,
@@ -355,23 +228,6 @@ public class WarMain extends JFrame{
 	
 	}
 	
-
-//	private class TankKeyListener extends KeyAdapter 
-//	{
-//		@Override
-//		public void keyPressed(KeyEvent e) {
-//			tank.keyPressed(e);
-//			enemyMoveManager.keyPressed(e);
-//			
-//		}
-//		
-//		@Override
-//		public void keyReleased(KeyEvent e) {
-//			tank.keyReleased(e);
-//			
-//		}
-//
-//	}
 	
     //调用碰撞检测方法
 	public GameObject getCollidedGameObj(MoveObject moveObject) {

@@ -1,11 +1,9 @@
 package com.yuyang.client.game.element.base;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 
 import com.yuyang.client.game.WarMain;
+import com.yuyang.client.game.tools.ImagesMap;
 
 public class BaseWall extends GameObject{
 	
@@ -17,16 +15,10 @@ public class BaseWall extends GameObject{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void show(Graphics g) {
-		g.setColor(Color.WHITE);
-		g.fillRect(x, y, width, height);
-	}
 
 	@Override
 	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
+		return ImagesMap.wallImages[0];
 	}
 
 

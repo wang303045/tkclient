@@ -14,7 +14,7 @@ public class NormalTank extends BaseTank{
 			BaseDirection moveDir, boolean moving, BaseDirection team,
 			int id) {
 		super(x, y, width, height, life, visiable, invincible, war, speed, moveDir,
-				moving, team, id);
+				moving, team, id, 1);
 		// TODO Auto-generated constructor stub
 	}
 	

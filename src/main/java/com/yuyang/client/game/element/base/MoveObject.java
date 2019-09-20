@@ -56,11 +56,12 @@ public abstract class MoveObject extends GameObject{
 
 			onCollide(collidedGameObj);     //撞击之后先调用子类实现的撞击处理方法，处理之后在调用下面的onDie方法,先需要判断死活
 
-			//下面三个方法重新看一下
+			//下面两个方法是处理碰撞之后die的方法，一个是处理被撞，一个是处理撞击的物体
+			//这个是被撞
 			if (!collidedGameObj.isAlive()) {   //如果被撞击的物体没有生命值了， 那么调用被撞物体的onDie方法，传入参数为自己（撞击物体）,最终是把被撞击物体移除（死掉）
-				collidedGameObj.onDie(this);	//这个方法是让调用者死掉，而不是传入的参数死掉
+				collidedGameObj.onDie(this);	//这个方法是让调用者死掉，而不是传入的参数死掉，等于传入的是killer
 			}
-
+			//这个是撞击者
 			if (!isAlive()) {				//撞击的物体(也就是自己)没有生命值了， 那么调用自己的onDie方法，传入参数为被撞击物体，最近是让自己移除（死掉）
 				onDie(collidedGameObj);		//这个方法是让调用者死掉，而不是传入的参数死掉
 				return;

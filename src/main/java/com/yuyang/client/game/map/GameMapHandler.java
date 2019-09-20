@@ -36,7 +36,7 @@ public class GameMapHandler {
 		//初始化游戏物体map
 		private void initObjectMap(){
 			for (ObjectAndLocation o : this.gameMap.getObjectList()) {
-				addToObjectMap(GameObjectFactory.newGameObj(o.getX(), o.getY(), o.getType(), this.war));
+				addToObjectMap(GameObjectFactory.newGameObj(o.getX(), o.getY(), o.getType(), null, null, this.war));
 			}
 		}
 		
